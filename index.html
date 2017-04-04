@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three Dee Carousel - Elix Example</title>
+    <script src="dist/app.js"></script>
+    <style>
+        keydown-test {
+            width: 400px;
+            height: 400px;
+            background-color: #333;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <three-dee-carousel>
+        <figure>1</figure>
+        <figure>2</figure>
+        <figure>3</figure>
+        <figure>4</figure>
+        <figure>5</figure>
+        <figure>6</figure>
+        <figure>7</figure>
+        <figure>8</figure>
+        <figure>9</figure>
+        <figure>10</figure>
+    </three-dee-carousel>
+    <div class="controls">
+        <button id="nextBtn">Next</button>
+        <button id="prevBtn">Previous</button>
+        <button id="orienBtn">Toggle Orientation</button>
+    </div>
+    <script>
+        const $carousel = document.querySelector("three-dee-carousel");
+        const $nextBtn = document.querySelector("#nextBtn");
+        $nextBtn.addEventListener("click", () => {
+            $carousel.next();
+        });
+        const $prevBtn = document.querySelector("#prevBtn");
+        $prevBtn.addEventListener("click", () => {
+            $carousel.previous();
+        });
+        const $orienBtn = document.querySelector("#orienBtn");
+        $orienBtn.addEventListener("click", () => {
+            $carousel.isHorizontal = !$carousel.isHorizontal;
+        });
+    </script>
+</body>
+</html>
