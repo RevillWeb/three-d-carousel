@@ -9,6 +9,7 @@ import SingleSelectionMixin from 'elix/mixins/SingleSelectionMixin';
 import ShadowTemplateMixin from 'elix/mixins/ShadowTemplateMixin';
 import KeyboardMixin from 'elix/mixins/KeyboardMixin';
 import KeyboardDirectionMixin from 'elix/mixins/KeyboardDirectionMixin';
+import DirectionSelectionMixin from 'elix/mixins/DirectionSelectionMixin';
 import symbols from 'elix/mixins/symbols';
 
 // We want to apply a number of mixin functions to HTMLElement.
@@ -16,7 +17,8 @@ const mixins = [
     ShadowTemplateMixin,
     SingleSelectionMixin,
     KeyboardMixin,
-    KeyboardDirectionMixin
+    KeyboardDirectionMixin,
+    DirectionSelectionMixin
 ];
 
 // The mixins are functions, so an efficient way to apply them all is with
@@ -28,12 +30,30 @@ class ThreeDeeCarousel extends base {
 
     constructor() {
         super();
-
         this._rotation = 0;
-        this._isHorizontal = false;
         this._theta = 0;
-
+        this[symbols.orientation] = "vertical";
     }
+
+    get orientation() {
+        return this[symbols.orientation] || this[symbols.defaults].orientation;
+    }
+    set orientation(value) {
+        const changed = value !== this[symbols.orientation];
+        this[symbols.orientation] = value;
+        if ("orientation" in base) { super.orientation = value; }
+        if (changed) {
+            this._render();
+            if (this[symbols.raiseChangeEvents]) {
+                const event = new CustomEvent("orientation-changed");
+                this.dispatchEvent(event);
+            }
+        }
+    }
+    toggleOrientation() {
+        this.orientation = (this.orientation === "vertical") ? "horizontal" : "vertical";
+    }
+
 
     /**
      * Single Selection
@@ -60,43 +80,38 @@ class ThreeDeeCarousel extends base {
     /**
      * Keyboard Support
      */
+    // Call the next method when the goUp action is initiated by the KeyboardDirectionMixin
     [symbols.goUp]() {
-        if (this._isHorizontal === true) {
-            this.isHorizontal = false;
-        }
         this.next();
     }
+    // Call the previous method when the goDown action is initiated by the KeyboardDirectionMixin
     [symbols.goDown]() {
-        if (this._isHorizontal === true) {
-            this.isHorizontal = false;
-        }
         this.previous();
     }
+    // Call the next method when the goAction action is initiated by the KeyboardDirectionMixin
     [symbols.goRight]() {
-        if (this._isHorizontal === false) {
-            this.isHorizontal = true;
-        }
         this.next();
     }
+    // Call the previous method when the goLeft action is initiated by the KeyboardDirectionMixin
     [symbols.goLeft]() {
-        if (this._isHorizontal === false) {
-            this.isHorizontal = true;
-        }
         this.previous();
     }
 
-    // Define a template that will be stamped into the Shadow DOM by the
-    // ShadowTemplateMixin.
+    // Define a template that will be stamped into the Shadow DOM by the ShadowTemplateMixin.
     get [symbols.template]() {
         return `
             <style>
                 :host {
                     display: block;
-                    width: 210px;
-                    height: 140px;
+                    width: 10em;
+                    height: 10em;
                     position: relative;
-                    margin: 180px auto;
+                    /*margin: 8em auto;*/
                     perspective: 1100px;
+                }
+                :host(:focus) {
+                    outline: none;
+                    background-color: #CCC;
                 }
                 #carousel {
                     width: 100%;
@@ -105,7 +120,7 @@ class ThreeDeeCarousel extends base {
                     transform-style: preserve-3d;
                     transition: transform 1s;
                 }
-                #carousel.panels-backface-invisible figure {                   
+                #carousel.panels-backface-invisible > * {                   
                     backface-visibility: hidden;
                 }
                 #carousel ::slotted(*) {
@@ -116,22 +131,17 @@ class ThreeDeeCarousel extends base {
                     user-select: none;
                     display: block;
                     position: absolute;
-                    width: 186px;
-                    height: 116px;
-                    left: 10px;
-                    top: 10px;
-                    border: 2px solid black;
-                    line-height: 116px;
-                    font-size: 80px;
-                    font-weight: bold;
-                    color: white;
-                    text-align: center;
+                    width: 90%;
+                    height: 90%;
+                    left: 5%;
+                    top: 5%;
+                    border: 2px solid black;                  
                     background-color: rgba(51,51,51,0.76);
                     transition: opacity 1s, transform 1s, background-color 1s, color 1s;
                 }
-                #carousel ::slotted(figure.selected) {
-                   background-color: #0d152d;
-                   color: #FFD700;
+                #carousel ::slotted(*.selected) {
+                   background-color: var(--selected-bg-color, #0d152d);
+                   color: var(--selected-color, #FFD700);
                 }
             </style>
             <div id="carousel">
@@ -139,35 +149,19 @@ class ThreeDeeCarousel extends base {
             </div>
     `;
     }
-
-
-    set rotation(value) {
-        if (this._rotation === value) return;
-        this._rotation = parseInt(value);
+    next() {
+        this._rotation = (this._rotation + (this._theta * 1 * -1));
         this._rotate();
     }
-    get rotation() {
-        return this._rotation;
-    }
-    set isHorizontal(value) {
-        if (this._isHorizontal === value) return;
-        this._isHorizontal = (value === true);
-        this._render();
-    }
-    get isHorizontal() {
-        return this._isHorizontal;
-    }
-    next() {
-        this.rotation = (this._rotation + (this._theta * 1 * -1));
-    }
     previous() {
-        this.rotation = (this._rotation + (this._theta * 1));
+        this._rotation = (this._rotation + (this._theta * 1));
+        this._rotate();
     }
     _render() {
         const panelCount = this.children.length;
         let panel, angle, i;
-        const panelSize = this._$carousel[ this._isHorizontal ? 'offsetWidth' : 'offsetHeight' ];
-        this._rotateFn = this._isHorizontal ? 'rotateY' : 'rotateX';
+        const panelSize = this._$carousel[ (this.orientation === "horizontal") ? 'offsetWidth' : 'offsetHeight' ];
+        this._rotateFn = (this.orientation === "horizontal") ? 'rotateY' : 'rotateX';
         this._theta = 360 / panelCount;
         // do some trig to figure out how big the carousel
         // is in 3D space
@@ -191,12 +185,16 @@ class ThreeDeeCarousel extends base {
         this._rotate();
     }
     _rotate(){
-        const idx = parseInt((this._rotation / 360).toString().split(".")[1] || 0);
-        console.log("IDX:", idx);
+        // Figure out which item is most central (If there are an odd number of items there might not be a completely centered item)
+        let idx = Math.round((this._rotation * -1) / this._theta) % this.children.length;
+        if (idx < 0) {
+            idx = this.children.length - (idx * -1);
+        }
         this.selectedItem = this.children[idx];
         this._$carousel.style.transform = 'translateZ(-' + this._radius + 'px) ' + this._rotateFn + '(' + this._rotation + 'deg)';
     }
     connectedCallback() {
+        this.style.margin = `${this.clientWidth}px auto`;
         this._$carousel = this.shadowRoot.querySelector("#carousel");
         this._$slot = this.shadowRoot.querySelector("#slot");
         this._$slot.addEventListener('slotchange', e => {

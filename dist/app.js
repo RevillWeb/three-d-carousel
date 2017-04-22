@@ -394,7 +394,8 @@ const symbolFunction = typeof window.Symbol === 'function' ?
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_elix_mixins_DirectionSelectionMixin__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__ = __webpack_require__(0);
 /**
  * Created by Leon Revill on 3/25/2017.
  * Blog: blog.revillweb.com
@@ -408,8 +409,9 @@ const symbolFunction = typeof window.Symbol === 'function' ?
 
 
 
+
 // We want to apply a number of mixin functions to HTMLElement.
-const mixins = [__WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_0_elix_mixins_SingleSelectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__["a" /* default */]];
+const mixins = [__WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_0_elix_mixins_SingleSelectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4_elix_mixins_DirectionSelectionMixin__["a" /* default */]];
 
 // The mixins are functions, so an efficient way to apply them all is with
 // reduce. This is just function composition. We end up with a base class we
@@ -420,10 +422,30 @@ class ThreeDeeCarousel extends base {
 
     constructor() {
         super();
-
         this._rotation = 0;
-        this._isHorizontal = false;
         this._theta = 0;
+        this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] = "vertical";
+    }
+
+    get orientation() {
+        return this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] || this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].defaults].orientation;
+    }
+    set orientation(value) {
+        const changed = value !== this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation];
+        this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] = value;
+        if ("orientation" in base) {
+            super.orientation = value;
+        }
+        if (changed) {
+            this._render();
+            if (this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].raiseChangeEvents]) {
+                const event = new CustomEvent("orientation-changed");
+                this.dispatchEvent(event);
+            }
+        }
+    }
+    toggleOrientation() {
+        this.orientation = this.orientation === "vertical" ? "horizontal" : "vertical";
     }
 
     /**
@@ -435,9 +457,9 @@ class ThreeDeeCarousel extends base {
      * @param item - One of the components items
      * @param selected - Whether the item should be selected or not
      */
-    [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected) {
-        if (super[__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].itemSelected]) {
-            super[__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected);
+    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected) {
+        if (super[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected]) {
+            super[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected);
         }
         item.classList.toggle('selected', selected);
     }
@@ -453,43 +475,38 @@ class ThreeDeeCarousel extends base {
     /**
      * Keyboard Support
      */
-    [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].goUp]() {
-        if (this._isHorizontal === true) {
-            this.isHorizontal = false;
-        }
+    // Call the next method when the goUp action is initiated by the KeyboardDirectionMixin
+    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goUp]() {
         this.next();
     }
-    [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].goDown]() {
-        if (this._isHorizontal === true) {
-            this.isHorizontal = false;
-        }
+    // Call the previous method when the goDown action is initiated by the KeyboardDirectionMixin
+    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goDown]() {
         this.previous();
     }
-    [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].goRight]() {
-        if (this._isHorizontal === false) {
-            this.isHorizontal = true;
-        }
+    // Call the next method when the goAction action is initiated by the KeyboardDirectionMixin
+    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goRight]() {
         this.next();
     }
-    [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].goLeft]() {
-        if (this._isHorizontal === false) {
-            this.isHorizontal = true;
-        }
+    // Call the previous method when the goLeft action is initiated by the KeyboardDirectionMixin
+    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goLeft]() {
         this.previous();
     }
 
-    // Define a template that will be stamped into the Shadow DOM by the
-    // ShadowTemplateMixin.
-    get [__WEBPACK_IMPORTED_MODULE_4_elix_mixins_symbols__["a" /* default */].template]() {
+    // Define a template that will be stamped into the Shadow DOM by the ShadowTemplateMixin.
+    get [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].template]() {
         return `
             <style>
                 :host {
                     display: block;
-                    width: 210px;
-                    height: 140px;
+                    width: 10em;
+                    height: 10em;
                     position: relative;
-                    margin: 180px auto;
+                    /*margin: 8em auto;*/
                     perspective: 1100px;
+                }
+                :host(:focus) {
+                    outline: none;
+                    background-color: #CCC;
                 }
                 #carousel {
                     width: 100%;
@@ -498,7 +515,7 @@ class ThreeDeeCarousel extends base {
                     transform-style: preserve-3d;
                     transition: transform 1s;
                 }
-                #carousel.panels-backface-invisible figure {                   
+                #carousel.panels-backface-invisible > * {                   
                     backface-visibility: hidden;
                 }
                 #carousel ::slotted(*) {
@@ -509,22 +526,17 @@ class ThreeDeeCarousel extends base {
                     user-select: none;
                     display: block;
                     position: absolute;
-                    width: 186px;
-                    height: 116px;
-                    left: 10px;
-                    top: 10px;
-                    border: 2px solid black;
-                    line-height: 116px;
-                    font-size: 80px;
-                    font-weight: bold;
-                    color: white;
-                    text-align: center;
+                    width: 90%;
+                    height: 90%;
+                    left: 5%;
+                    top: 5%;
+                    border: 2px solid black;                  
                     background-color: rgba(51,51,51,0.76);
                     transition: opacity 1s, transform 1s, background-color 1s, color 1s;
                 }
-                #carousel ::slotted(figure.selected) {
-                   background-color: #0d152d;
-                   color: #FFD700;
+                #carousel ::slotted(*.selected) {
+                   background-color: var(--selected-bg-color, #0d152d);
+                   color: var(--selected-color, #FFD700);
                 }
             </style>
             <div id="carousel">
@@ -532,34 +544,19 @@ class ThreeDeeCarousel extends base {
             </div>
     `;
     }
-
-    set rotation(value) {
-        if (this._rotation === value) return;
-        this._rotation = parseInt(value);
+    next() {
+        this._rotation = this._rotation + this._theta * 1 * -1;
         this._rotate();
     }
-    get rotation() {
-        return this._rotation;
-    }
-    set isHorizontal(value) {
-        if (this._isHorizontal === value) return;
-        this._isHorizontal = value === true;
-        this._render();
-    }
-    get isHorizontal() {
-        return this._isHorizontal;
-    }
-    next() {
-        this.rotation = this._rotation + this._theta * 1 * -1;
-    }
     previous() {
-        this.rotation = this._rotation + this._theta * 1;
+        this._rotation = this._rotation + this._theta * 1;
+        this._rotate();
     }
     _render() {
         const panelCount = this.children.length;
         let panel, angle, i;
-        const panelSize = this._$carousel[this._isHorizontal ? 'offsetWidth' : 'offsetHeight'];
-        this._rotateFn = this._isHorizontal ? 'rotateY' : 'rotateX';
+        const panelSize = this._$carousel[this.orientation === "horizontal" ? 'offsetWidth' : 'offsetHeight'];
+        this._rotateFn = this.orientation === "horizontal" ? 'rotateY' : 'rotateX';
         this._theta = 360 / panelCount;
         // do some trig to figure out how big the carousel
         // is in 3D space
@@ -583,12 +580,16 @@ class ThreeDeeCarousel extends base {
         this._rotate();
     }
     _rotate() {
-        const idx = parseInt((this._rotation / 360).toString().split(".")[1] || 0);
-        console.log("IDX:", idx);
+        // Figure out which item is most central (If there are an odd number of items there might not be a completely centered item)
+        let idx = Math.round(this._rotation * -1 / this._theta) % this.children.length;
+        if (idx < 0) {
+            idx = this.children.length - idx * -1;
+        }
         this.selectedItem = this.children[idx];
         this._$carousel.style.transform = 'translateZ(-' + this._radius + 'px) ' + this._rotateFn + '(' + this._rotation + 'deg)';
     }
     connectedCallback() {
+        this.style.margin = `${this.clientWidth}px auto`;
         this._$carousel = this.shadowRoot.querySelector("#carousel");
         this._$slot = this.shadowRoot.querySelector("#slot");
         this._$slot.addEventListener('slotchange', e => {
@@ -810,7 +811,7 @@ function KeyboardMixin(base) {
 
     constructor() {
       super();
-      console.log(this);
+
       this.addEventListener('keydown', event => {
         this[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].raiseChangeEvents] = true;
         const handled = this[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].keydown](event);
@@ -1484,6 +1485,96 @@ function updatePossibleNavigations(element) {
   if (element.canSelectPrevious !== canSelectPrevious) {
     element.canSelectPrevious = canSelectPrevious;
   }
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__symbols__ = __webpack_require__(0);
+/* harmony export (immutable) */ __webpack_exports__["a"] = DirectionSelectionMixin;
+
+
+
+/**
+ * Mixin which maps direction semantics (goLeft, goRight, etc.) to selection
+ * semantics (selectPrevious, selectNext, etc.).
+ *
+ * This mixin can be used in conjunction with
+ * [KeyboardDirectionMixin](KeyboardDirectionMixin.md) (which maps keyboard
+ * events to directions) and a mixin that handles selection like
+ * [SingleSelectionMixin](SingleSelectionMixin.md).
+ *
+ * @module DirectionSelectionMixin
+ * @param base {Class} the base class to extend
+ * @returns {Class} the extended class
+ */
+function DirectionSelectionMixin(base) {
+
+  /**
+   * The class prototype added by the mixin.
+   */
+  class DirectionSelection extends base {
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goDown]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goDown]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goDown](); }
+      if (!this.selectNext) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectNext" method.`);
+      } else {
+        return this.selectNext();
+      }
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goEnd]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goEnd]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goEnd](); }
+      if (!this.selectLast) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectLast" method.`);
+      } else {
+        return this.selectLast();
+      }
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goLeft]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goLeft]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goLeft](); }
+      if (!this.selectPrevious) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectPrevious" method.`);
+      } else {
+        return this.selectPrevious();
+      }
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goRight]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goRight]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goRight](); }
+      if (!this.selectNext) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectNext" method.`);
+      } else {
+        return this.selectNext();
+      }
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goStart]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goStart]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goStart](); }
+      if (!this.selectFirst) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectFirst" method.`);
+      } else {
+        return this.selectFirst();
+      }
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goUp]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goUp]) { super[__WEBPACK_IMPORTED_MODULE_0__symbols__["a" /* default */].goUp](); }
+      if (!this.selectPrevious) {
+        console.warn(`DirectionSelectionMixin expects a component to define a "selectPrevious" method.`);
+      } else {
+        return this.selectPrevious();
+      }
+    }
+
+  }
+
+  return DirectionSelection;
 }
 
 

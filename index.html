@@ -2,48 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Three Dee Carousel - Elix Example</title>
     <script src="dist/app.js"></script>
     <style>
-        keydown-test {
-            width: 400px;
-            height: 400px;
-            background-color: #333;
-            display: block;
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .labeled-item {
+            text-align: center;
+        }
+        .labeled-item img {
+            width: 110px;
+            height: 110px;
+        }
+        .labeled-item label {
+            font-size: 20px;
+        }
+        .controls {
+            text-align: center;
+        }
+        .controls button {
+            color: #292b2c;
+            background-color: #fff;
+            user-select: none;
+            border: 1px solid #CCC;
+            padding: .5em 1em;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: .3em;
+        }
+        .current-selection {
+            width: 340px;
+            margin: 1em auto;
+            background-color: #F1F1F1;
+            text-align: center;
+            border-radius: .3em;
+        }
+        .current-selection h2 {
+            margin: 0;
+            padding: .5em 0;
         }
     </style>
 </head>
 <body>
-    <three-dee-carousel>
-        <figure>1</figure>
-        <figure>2</figure>
-        <figure>3</figure>
-        <figure>4</figure>
-        <figure>5</figure>
-        <figure>6</figure>
-        <figure>7</figure>
-        <figure>8</figure>
-        <figure>9</figure>
-        <figure>10</figure>
+    <three-dee-carousel width="150px">
+        <img src="assets/images/planets/sun.png" alt="Sun" />
+        <img src="assets/images/planets/mercury.png" alt="Mercury" />
+        <img src="assets/images/planets/venus.png" alt="Venus" />
+        <div class="labeled-item">
+            <img src="assets/images/planets/earth.png" alt="Earth" />
+            <label>Earth</label>
+        </div>
+        <img src="assets/images/planets/moon.png" alt="Moon" />
+        <img src="assets/images/planets/mars.png" alt="Mars" />
+        <img src="assets/images/planets/jupiter.png" alt="Jupiter" />
+        <img src="assets/images/planets/saturn.png" alt="Saturn" />
+        <img src="assets/images/planets/uranus.png" alt="Uranus" />
+        <img src="assets/images/planets/neptune.png" alt="Neptune" />
     </three-dee-carousel>
     <div class="controls">
-        <button id="nextBtn">Next</button>
         <button id="prevBtn">Previous</button>
+        <button id="nextBtn">Next</button>
         <button id="orienBtn">Toggle Orientation</button>
+    </div>
+    <div class="current-selection">
+        <h2 id="selectedLabel"></h2>
+        <img src="" id="selectedImage" />
     </div>
     <script>
         const $carousel = document.querySelector("three-dee-carousel");
+        const $selectedImg = document.querySelector("#selectedImage");
+        const $selectedLabel = document.querySelector("#selectedLabel");
+
+        function setSelectedItem($selectedItem) {
+            const $img = ($selectedItem.nodeName === "IMG") ? $selectedItem : $selectedItem.querySelector("img");
+            if ($img !== null) {
+                $selectedImg.setAttribute("src", $img.src);
+                $selectedLabel.innerHTML = `<strong>${$carousel.selectedIndex}</strong>: ${$img.alt}`;
+            }
+        }
+
+        // Initially set the selected item
+        setSelectedItem($carousel.selectedItem);
+
+        // Event listener used to set the selected item when the user has change the selection internally
+        $carousel.addEventListener("selected-index-changed", () => {
+            setSelectedItem($carousel.selectedItem);
+        });
         const $nextBtn = document.querySelector("#nextBtn");
         $nextBtn.addEventListener("click", () => {
             $carousel.next();
+            // SingleSelection mixin won't emit change events if we modify the selection programmatically (desired behaviour)
+            // So update the selection manually
+            setSelectedItem($carousel.selectedItem);
         });
         const $prevBtn = document.querySelector("#prevBtn");
         $prevBtn.addEventListener("click", () => {
             $carousel.previous();
+            // SingleSelection mixin won't emit change events if we modify the selection programmatically (desired behaviour)
+            // So update the selection manually
+            setSelectedItem($carousel.selectedItem);
         });
         const $orienBtn = document.querySelector("#orienBtn");
         $orienBtn.addEventListener("click", () => {
-            $carousel.isHorizontal = !$carousel.isHorizontal;
+            $carousel.toggleOrientation();
         });
     </script>
 </body>
