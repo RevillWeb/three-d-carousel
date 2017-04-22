@@ -10,6 +10,7 @@ import ShadowTemplateMixin from 'elix/mixins/ShadowTemplateMixin';
 import KeyboardMixin from 'elix/mixins/KeyboardMixin';
 import KeyboardDirectionMixin from 'elix/mixins/KeyboardDirectionMixin';
 import DirectionSelectionMixin from 'elix/mixins/DirectionSelectionMixin';
+import DefaultSlotContentMixin from 'elix/mixins/DefaultSlotContentMixin';
 import symbols from 'elix/mixins/symbols';
 
 // We want to apply a number of mixin functions to HTMLElement.
@@ -18,7 +19,8 @@ const mixins = [
     SingleSelectionMixin,
     KeyboardMixin,
     KeyboardDirectionMixin,
-    DirectionSelectionMixin
+    DirectionSelectionMixin,
+    DefaultSlotContentMixin
 ];
 
 // The mixins are functions, so an efficient way to apply them all is with
@@ -193,13 +195,12 @@ class ThreeDCarousel extends base {
         this.selectedItem = this.children[idx];
         this._$carousel.style.transform = 'translateZ(-' + this._radius + 'px) ' + this._rotateFn + '(' + this._rotation + 'deg)';
     }
+    [symbols.contentChanged]() {
+        this._render();
+    }
     connectedCallback() {
         this.style.margin = `${this.clientWidth}px auto`;
         this._$carousel = this.shadowRoot.querySelector("#carousel");
-        this._$slot = this.shadowRoot.querySelector("#slot");
-        this._$slot.addEventListener('slotchange', e => {
-            this._render();
-        });
         this.setAttribute("tabindex", "0");
     }
 }

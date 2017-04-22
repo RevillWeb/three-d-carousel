@@ -395,7 +395,8 @@ const symbolFunction = typeof window.Symbol === 'function' ?
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_elix_mixins_DirectionSelectionMixin__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_elix_mixins_DefaultSlotContentMixin__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__ = __webpack_require__(0);
 /**
  * Created by Leon Revill on 3/25/2017.
  * Blog: blog.revillweb.com
@@ -410,8 +411,9 @@ const symbolFunction = typeof window.Symbol === 'function' ?
 
 
 
+
 // We want to apply a number of mixin functions to HTMLElement.
-const mixins = [__WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_0_elix_mixins_SingleSelectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4_elix_mixins_DirectionSelectionMixin__["a" /* default */]];
+const mixins = [__WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_0_elix_mixins_SingleSelectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_2_elix_mixins_KeyboardMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_3_elix_mixins_KeyboardDirectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_4_elix_mixins_DirectionSelectionMixin__["a" /* default */], __WEBPACK_IMPORTED_MODULE_5_elix_mixins_DefaultSlotContentMixin__["a" /* default */]];
 
 // The mixins are functions, so an efficient way to apply them all is with
 // reduce. This is just function composition. We end up with a base class we
@@ -424,21 +426,21 @@ class ThreeDCarousel extends base {
         super();
         this._rotation = 0;
         this._theta = 0;
-        this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] = "vertical";
+        this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].orientation] = "vertical";
     }
 
     get orientation() {
-        return this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] || this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].defaults].orientation;
+        return this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].orientation] || this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].defaults].orientation;
     }
     set orientation(value) {
-        const changed = value !== this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation];
-        this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].orientation] = value;
+        const changed = value !== this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].orientation];
+        this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].orientation] = value;
         if ("orientation" in base) {
             super.orientation = value;
         }
         if (changed) {
             this._render();
-            if (this[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].raiseChangeEvents]) {
+            if (this[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].raiseChangeEvents]) {
                 const event = new CustomEvent("orientation-changed");
                 this.dispatchEvent(event);
             }
@@ -457,9 +459,9 @@ class ThreeDCarousel extends base {
      * @param item - One of the components items
      * @param selected - Whether the item should be selected or not
      */
-    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected) {
-        if (super[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected]) {
-            super[__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected);
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected) {
+        if (super[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].itemSelected]) {
+            super[__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].itemSelected](item, selected);
         }
         item.classList.toggle('selected', selected);
     }
@@ -476,24 +478,24 @@ class ThreeDCarousel extends base {
      * Keyboard Support
      */
     // Call the next method when the goUp action is initiated by the KeyboardDirectionMixin
-    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goUp]() {
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].goUp]() {
         this.next();
     }
     // Call the previous method when the goDown action is initiated by the KeyboardDirectionMixin
-    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goDown]() {
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].goDown]() {
         this.previous();
     }
     // Call the next method when the goAction action is initiated by the KeyboardDirectionMixin
-    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goRight]() {
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].goRight]() {
         this.next();
     }
     // Call the previous method when the goLeft action is initiated by the KeyboardDirectionMixin
-    [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].goLeft]() {
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].goLeft]() {
         this.previous();
     }
 
     // Define a template that will be stamped into the Shadow DOM by the ShadowTemplateMixin.
-    get [__WEBPACK_IMPORTED_MODULE_5_elix_mixins_symbols__["a" /* default */].template]() {
+    get [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].template]() {
         return `
             <style>
                 :host {
@@ -588,13 +590,12 @@ class ThreeDCarousel extends base {
         this.selectedItem = this.children[idx];
         this._$carousel.style.transform = 'translateZ(-' + this._radius + 'px) ' + this._rotateFn + '(' + this._rotation + 'deg)';
     }
+    [__WEBPACK_IMPORTED_MODULE_6_elix_mixins_symbols__["a" /* default */].contentChanged]() {
+        this._render();
+    }
     connectedCallback() {
         this.style.margin = `${this.clientWidth}px auto`;
         this._$carousel = this.shadowRoot.querySelector("#carousel");
-        this._$slot = this.shadowRoot.querySelector("#slot");
-        this._$slot.addEventListener('slotchange', e => {
-            this._render();
-        });
         this.setAttribute("tabindex", "0");
     }
 }
@@ -1575,6 +1576,186 @@ function DirectionSelectionMixin(base) {
   }
 
   return DirectionSelection;
+}
+
+
+/***/ }),
+/* 9 */,
+/* 10 */,
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__content__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Symbol__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__symbols__ = __webpack_require__(0);
+/* harmony export (immutable) */ __webpack_exports__["a"] = DefaultSlotContentMixin;
+
+
+
+
+
+// Symbols for private data members on an element.
+const slotchangeFiredSymbol = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__Symbol__["a" /* default */])('slotchangeFired');
+
+
+/**
+ * Mixin which defines a component's `symbols.content` property as the flattened
+ * set of nodes assigned to its default slot.
+ *
+ * This also provides notification of changes to a component's content. It
+ * will invoke a `symbols.contentChanged` method when the component is first
+ * instantiated, and whenever its distributed children change. This is intended
+ * to satisfy the Gold Standard checklist item for monitoring
+ * [Content Changes](https://github.com/webcomponents/gold-standard/wiki/Content-Changes).
+ *
+ * Example:
+ *
+ * ```
+ * let base = DefaultSlotContentMixin(HTMLElement);
+ * class CountingElement extends base {
+ *
+ *   constructor() {
+ *     super();
+ *     let root = this.attachShadow({ mode: 'open' });
+ *     root.innerHTML = `<slot></slot>`;
+ *     this[symbols.shadowCreated]();
+ *   }
+ *
+ *   [symbols.contentChanged]() {
+ *     if (super[symbols.contentChanged]) { super[symbols.contentChanged](); }
+ *     // Count the component's children, both initially and when changed.
+ *     this.count = this.distributedChildren.length;
+ *   }
+ *
+ * }
+ * ```
+ *
+ * To use this mixin, the component should define a default (unnamed) `slot`
+ * element in its shadow subtree.
+ *
+ * To receive `contentChanged` notification, this mixin expects a component to
+ * invoke a method called `symbols.shadowCreated` after the component's shadow
+ * root has been created and populated.
+ *
+ * @module DefaultSlotContentMixin
+ * @param base {Class} the base class to extend
+ * @returns {Class} the extended class
+ */
+function DefaultSlotContentMixin(base) {
+
+  /**
+   * The class prototype added by the mixin.
+   */
+  class DefaultSlotContent extends base {
+
+    connectedCallback() {
+      if (super.connectedCallback) { super.connectedCallback(); }
+      // HACK for Blink, which doesn't correctly fire initial slotchange.
+      // See https://bugs.chromium.org/p/chromium/issues/detail?id=696659
+      setTimeout(() => {
+        // By this point, the slotchange event should have fired.
+        if (!this[slotchangeFiredSymbol]) {
+          // slotchange event didn't fire; we're in Blink. Force the invocation
+          // of contentChanged that would have happened on slotchange.
+          if (this[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].contentChanged]) {
+            this[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].contentChanged]();
+          }
+        }
+      });
+    }
+
+    /**
+     * The content of this component, defined to be the flattened set of
+     * nodes assigned to its default unnamed slot.
+     *
+     * @type {HTMLElement[]}
+     */
+    get [__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].content]() {
+      const slot = defaultSlot(this);
+      return slot ?
+        slot.assignedNodes({ flatten: true }) :
+        [];
+    }
+
+    [__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].shadowCreated]() {
+      if (super[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].shadowCreated]) { super[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].shadowCreated](); }
+      // Listen to changes on the default slot.
+      const slot = defaultSlot(this);
+      slot.addEventListener('slotchange', event => {
+        this[slotchangeFiredSymbol] = true;
+        if (this[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].contentChanged]) {
+          this[__WEBPACK_IMPORTED_MODULE_2__symbols__["a" /* default */].contentChanged]();
+        }
+      });
+    }
+  }
+
+  return DefaultSlotContent;
+}
+
+
+function defaultSlot(element) {
+  const defaultSlot = element.shadowRoot && element.shadowRoot.querySelector('slot:not([name])');
+  if (element.shadowRoot && !defaultSlot) {
+    console.warn(`DefaultSlotContentMixin expects a component to define a shadow tree that includes a default (unnamed) slot.`);
+  }
+  return defaultSlot;
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export substantiveElements */
+/**
+ * Helpers for accessing a component's content.
+ *
+ * @module content
+ */
+
+/**
+ * Return a set of Elements which are likely to be useful as component content.
+ *
+ * Given a `NodeList` or array of objects, this will return only those array
+ * members that are: a) instances of `Element` (`HTMLElement` or `SVGElement`),
+ * and b) not on a blacklist of normally invisible elements (such as `style` or
+ * `script`). Among other things, this filters out Text nodes.
+ *
+ * @param {NodeList|Node[]} nodes - the list of nodes to filter
+ * @returns {Element[]} - the filtered elements
+ */
+function substantiveElements(nodes) {
+
+  // These are tags for elements that can appear in the document body, but do
+  // not seem to have any user-visible manifestation.
+  // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+  const auxiliaryElementTags = [
+    'applet',         // deprecated
+    'basefont',       // deprecated
+    'embed',
+    'font',           // deprecated
+    'frame',          // deprecated
+    'frameset',       // deprecated
+    'isindex',        // deprecated
+    'keygen',         // deprecated
+    'link',
+    'multicol',       // deprecated
+    'nextid',         // deprecated
+    'noscript',
+    'object',
+    'param',
+    'script',
+    'style',
+    'template',
+    'noembed'         // deprecated
+  ];
+
+  return [].filter.call(nodes,
+    node => node instanceof Element &&
+        (!node.localName || auxiliaryElementTags.indexOf(node.localName) < 0)
+  );
 }
 
 
