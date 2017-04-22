@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Three Dee Carousel - Elix Example</title>
+    <title>3D Carousel - Elix Example</title>
     <script src="dist/app.js"></script>
     <style>
         html, body {
@@ -48,7 +48,7 @@
     </style>
 </head>
 <body>
-    <three-dee-carousel width="150px">
+    <three-d-carousel>
         <img src="assets/images/planets/sun.png" alt="Sun" />
         <img src="assets/images/planets/mercury.png" alt="Mercury" />
         <img src="assets/images/planets/venus.png" alt="Venus" />
@@ -62,7 +62,7 @@
         <img src="assets/images/planets/saturn.png" alt="Saturn" />
         <img src="assets/images/planets/uranus.png" alt="Uranus" />
         <img src="assets/images/planets/neptune.png" alt="Neptune" />
-    </three-dee-carousel>
+    </three-d-carousel>
     <div class="controls">
         <button id="prevBtn">Previous</button>
         <button id="nextBtn">Next</button>
@@ -73,7 +73,7 @@
         <img src="" id="selectedImage" />
     </div>
     <script>
-        const $carousel = document.querySelector("three-dee-carousel");
+        const $carousel = document.querySelector("three-d-carousel");
         const $selectedImg = document.querySelector("#selectedImage");
         const $selectedLabel = document.querySelector("#selectedLabel");
 

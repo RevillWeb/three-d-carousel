@@ -26,7 +26,7 @@ const mixins = [
 // can extend below.
 const base = mixins.reduce((cls, mixin) => mixin(cls), HTMLElement);
 
-class ThreeDeeCarousel extends base {
+class ThreeDCarousel extends base {
 
     constructor() {
         super();
@@ -204,6 +204,6 @@ class ThreeDeeCarousel extends base {
     }
 }
 
-window.customElements.define("three-dee-carousel", ThreeDeeCarousel);
+window.customElements.define("three-d-carousel", ThreeDCarousel);
 
-export default ThreeDeeCarousel;
+export default ThreeDCarousel;

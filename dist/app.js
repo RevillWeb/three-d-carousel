@@ -418,7 +418,7 @@ const mixins = [__WEBPACK_IMPORTED_MODULE_1_elix_mixins_ShadowTemplateMixin__["a
 // can extend below.
 const base = mixins.reduce((cls, mixin) => mixin(cls), HTMLElement);
 
-class ThreeDeeCarousel extends base {
+class ThreeDCarousel extends base {
 
     constructor() {
         super();
@@ -599,9 +599,9 @@ class ThreeDeeCarousel extends base {
     }
 }
 
-window.customElements.define("three-dee-carousel", ThreeDeeCarousel);
+window.customElements.define("three-d-carousel", ThreeDCarousel);
 
-/* unused harmony default export */ var _unused_webpack_default_export = (ThreeDeeCarousel);
+/* unused harmony default export */ var _unused_webpack_default_export = (ThreeDCarousel);
 
 /***/ }),
 /* 3 */

@@ -5,4 +5,4 @@
  * GitHub: github.com/RevillWeb
  */
 
-import ThreeDeeCarousel from './components/three-dee-carousel';
+import ThreeDCarousel from './components/three-dee-carousel';
