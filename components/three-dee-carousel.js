@@ -28,6 +28,7 @@ const mixins = [
 // can extend below.
 const base = mixins.reduce((cls, mixin) => mixin(cls), HTMLElement);
 
+// Full credit for the work on the carousel goes to David DeSandro (http://desandro.github.io/3dtransforms/examples/carousel-02-dynamic.html)
 class ThreeDCarousel extends base {
 
     constructor() {
